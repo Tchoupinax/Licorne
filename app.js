@@ -12,4 +12,5 @@ program
 
 
 
-controller.generate("home", ["index", "up"]);
+let v = controller.generate("home", "./", true, ["index", "up"]);
+console.log(v)

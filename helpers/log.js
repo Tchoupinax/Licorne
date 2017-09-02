@@ -1,12 +1,4 @@
 /*
- * * * * * * * * * * * * * * *
- *
- *   LOG.JS
- *
- * * * * * * * * * * * * * * *
- */
-
-/*
  *   Standard print
  */
 exports.p = function(msg) {

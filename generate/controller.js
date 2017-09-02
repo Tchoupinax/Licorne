@@ -1,8 +1,14 @@
 let write = require('../helpers/ecriture').write;
 let ln = require('../helpers/ecriture').ln;
 
-exports.generate = function(name, nomMethodes) {
-    var fs = require('fs');
+/*
+ * ===============================================================
+ * ==== P U B L I C  =============================================
+ * ===============================================================
+ */
+// Export the method which allow to create a model of controller
+// in the specified file
+exports.generate = function(name, file, force, nomMethodes) {
     var content = "";
 
     content = head(name);
@@ -13,14 +19,27 @@ exports.generate = function(name, nomMethodes) {
     content += write("}")
     content += write("module.exports = " + name + "Controller")
 
-    fs.writeFile("./" + name + "Controller.js", content, function(err) {
-        if (err) {
-            return console.log(err);
+    let fs = require('fs');
+    let fileName = file + name + "Controller.js";
+    // Check if file already exists, in this case we 
+    // need use approval to overwrite it
+    if (fs.existsSync(fileName)) {
+        if (force) {
+            fs.writeFileSync(fileName, content);
+            return true;
         }
-        console.log("The file was saved!");
-    });
+        return false;
+    } else {
+        fs.writeFileSync(fileName, content);
+        return true;
+    }
 }
 
+/*
+ * ===============================================================
+ * ==== P R I V A T E ============================================
+ * ===============================================================
+ */
 function head(name) {
     //
     var s = "";
