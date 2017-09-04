@@ -1,66 +1,28 @@
 //
 let log = require('./log');
-var singlelog = require('single-line-log').stdout;
-
+let singlelog = require('single-line-log').stdout;
+let cursor = require('ansi')(process.stdout);
+let rainbow = require('./ecriture').rainbow;
+let write = require('./ecriture').write;
+let w = require('./ecriture');
 
 //
 exports.home = function () {
-    let cursor = require('ansi')(process.stdout);
 
-    let x = 0;
-    let r = 0;
-    let g = 0;
-    let b = 0;
-    let rgb;
-    let couleur = "";
-    setInterval(function () {
-        x++;
-        if (x < 255) {
-            r = 255;
-            g = x;
-            b = 0;
-        } else if (x > 255 && x < 510) {
-            r = 510 - x;
-            g = 255;
-            b = 0;
-        } else if (x > 510 && x < 765) {
-            r = 0;
-            g = 255;
-            b = x - 510;
-        } else if (x > 765 && x < 1020) {
-            r = 0;
-            g = 1020 - x;
-            b = 255;
-        } else if (x > 1020 && x < 1275) {
-            r = x - 1020;
-            g = 0;
-            b = 255;
-        } else if (x > 1275 && x < 1530) {
-            r = 255;
-            g = 0;
-            b = 1530 - x;
-        } else if (x > 1530) {
-            x = 0;
-        }
-        rgb = [r, g, b];
-        for (var p = 0; p < 3; p++) {
-            if (parseInt(rgb[p]) < 10) {
-                couleur += "0" + rgb[p].toString(16);
-            }
-            else if (parseInt(rgb[p]) < 16) {
-                couleur += "0" + rgb[p].toString(16);
-            }
-            else {
-                couleur += rgb[p].toString(16);
-            }
-        }
+    rainbow('████████████████████████████████████████████████████████████████████████████████████████');
+    rainbow('_ _                           ');
+    rainbow('| (_)                          ');
+    rainbow('| |_  ___ ___ _ __ _ __   ___ ');
+    rainbow('| | |/ __/ _ \| \'__| \'_ \ / _ \\');
+    rainbow('| | | (_| (_) |  |  | | | |  __/');
+    rainbow('|_|_|\___\___/|_|  |_| |_|\___|');
+    log.ln();
 
-        cursor
-            .hex("#" + couleur)
 
-        singlelog("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ \n       L.I.C.O.R.N.E \n░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
-        couleur = ""
-    }, 5);
+    rainbow("Commands :");
+    w.ln();
+    write("\t version");
+    write("\t new [project-name]");
 }
 //
 exports.new = function () {
@@ -82,3 +44,38 @@ exports.new = function () {
     display[1] = filled;
 
 }
+
+
+
+
+
+
+
+
+/*
+
+etInterval(function () {
+        rgb = rainbow(x);
+        for (var p = 0; p < 3; p++) {
+            if (parseInt(rgb[p]) < 10) {
+                couleur += "0" + rgb[p].toString(16);
+            }
+            else if (parseInt(rgb[p]) < 16) {
+                couleur += "0" + rgb[p].toString(16);
+            }
+            else {
+                couleur += rgb[p].toString(16);
+            }
+        }
+
+        cursor
+            .hex("#" + couleur)
+
+        singlelog("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ \n       L.I.C.O.R.N.E \n░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
+        couleur = ""
+        x++;
+    }, 1);
+
+
+
+    */

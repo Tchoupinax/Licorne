@@ -2,12 +2,23 @@
  *   Write + endline
  */
 exports.write = function (msg) {
-    return msg + "\n";
+    console.log(msg)
 }
 
 /*
  *   Simple endline
  */
 exports.ln = function () {
-    return "\n"
+    console.log("\n")
 }
+
+/*
+ *  Rainbow writing
+ */
+exports.rainbow = function (msg) {
+    let colors = require('colors');
+    colors.setTheme({
+        rainbow: 'rainbow',
+    });
+    console.log(colors.rainbow(msg));
+};

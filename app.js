@@ -6,22 +6,63 @@ let controller = require('./generate/controller');
 
 let exec = require('./helpers/exec.js');
 
-
 program
-    .version('1.0.0')
+    .version(require('./package.json').version)
+    .option('version', 'Displays current version')
     .option('new [project name]', 'Create a new project')
     .parse(process.argv);
 
+// Check arguments count. If argument is known by the application, 
+// it will stored as a property of "program". Else, it will be added 
+// in args array
+//
+// Today, there is 13 properties without any argument
+// 
+// Check if a known propertie exists
+
+
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+let projectName = "banana";
+let exec2 = require('child_process').exec;
 
 if (program.args.length == 0) {
-    exec.home();
+    if (program.new) {
+        log.print("Creating a new project.")
+        const { spawn } = require('child_process');
+        const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
+        log.print("Downloading source....")
+        ls.stderr.on('close', (data) => {
+            if (program.new === true) {
+                rl.question('Project\'s name ? ', (answer) => {
+                    projectName = answer;
+                    exec2("mv ./test-express " + projectName, function (err, stdout, stderr) {
+                        console.log(stdout);
+                        console.log(err);
+                    });
+                    rl.close();
+                })
+            }
+            else {
+                exec2("mv ./test-express " + projectName, function (err, stdout, stderr) {
+                    console.log(stdout);
+                    console.log(err);
+                });
+            }
+        });
+    }
+    else {
+        exec.home();
+    }
 }
-else if (program.new) {
-    exec.new();
+else {
+    log.error("Unknow arguments");
 }
-
-
-
 
 
 

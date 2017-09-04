@@ -1,34 +1,41 @@
 /*
  *   Standard print
  */
-exports.p = function(msg) {
-    console.log("info : ".green + msg)
-}
+exports.print = function (msg) {
+    console.log("info : ".green + msg);
+};
 
 /*
  *   debug print
  */
-exports.d = function(msg) {
-    console.l("debug : ".blue + msg)
-}
+exports.debug = function (msg) {
+    console.log("debug : ".blue + msg);
+};
+
+/*
+ *   debug print
+ */
+exports.error = function (msg) {
+    console.log("error : ".red + msg);
+};
 
 /*
  *   Standard print with gray message
  */
-exports.pg = function(msg) {
-    console.log("info : ".green + msg.gray)
-}
+exports.printgray = function (msg) {
+    console.log("info : ".green + msg.gray);
+};
 
 /*
  *   Debug print with gray message
  */
-exports.dg = function(msg) {
-    console.log("debug : ".blue + msg.gray)
-}
+exports.debuggray = function (msg) {
+    console.log("debug : ".blue + msg.gray);
+};
 
 /*
  *   Print empty line
  */
-exports.ln = function(msg) {
-    console.log("\n")
-}
+exports.ln = function (msg) {
+    console.log("\n");
+};
