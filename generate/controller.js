@@ -8,7 +8,7 @@ let ln = require('../helpers/ecriture').ln;
  */
 // Export the method which allow to create a model of controller
 // in the specified file
-exports.generate = function(name, file, force, nomMethodes) {
+exports.generate = function (name, file, force, nomMethodes) {
     var content = "";
 
     content = head(name);

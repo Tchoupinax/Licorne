@@ -1,13 +1,13 @@
 /*
  *   Write + endline
  */
-exports.write = function(msg) {
+exports.write = function (msg) {
     return msg + "\n";
 }
 
 /*
  *   Simple endline
  */
-exports.ln = function() {
+exports.ln = function () {
     return "\n"
 }
