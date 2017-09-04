@@ -6,6 +6,9 @@ let controller = require('./generate/controller');
 
 let exec = require('./helpers/exec.js');
 
+var readlineSync = require('readline-sync');
+
+let fs = require('fs');
 program
     .version(require('./package.json').version)
     .option('version', 'Displays current version')
@@ -20,40 +23,55 @@ program
 // 
 // Check if a known propertie exists
 
-
-const readline = require('readline');
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-let projectName = "banana";
 let exec2 = require('child_process').exec;
 
 if (program.args.length == 0) {
     if (program.new) {
+        //
+        //
+        // Variables
+        let projectName;
+        //
+        //
+        // Dowloading source and rename project directory 
         log.print("Creating a new project.")
         const { spawn } = require('child_process');
         const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
         log.print("Downloading source....")
+
+        ls.stderr.on('data', (data) => {
+            console.log(`stderr: ${data}`);
+        });
         ls.stderr.on('close', (data) => {
+            console.log("point 1")
             if (program.new === true) {
-                rl.question('Project\'s name ? ', (answer) => {
-                    projectName = answer;
-                    exec2("mv ./test-express " + projectName, function (err, stdout, stderr) {
-                        console.log(stdout);
-                        console.log(err);
-                    });
-                    rl.close();
-                })
+                console.log("point 2")
+                projectName = readlineSync.question('Project\'s name :');
+                console.log('hi')
+                //exec2("mv ./test-express " + projectName);
             }
             else {
-                exec2("mv ./test-express " + projectName, function (err, stdout, stderr) {
-                    console.log(stdout);
-                    console.log(err);
-                });
+                console.log("point 3")
+                //exec2("mv ./test-express " + program.new);
+                projectName = program.new;
             }
+            console.log("point 4")
+            let version = readlineSync.question('Version (1.0.0) :');
+            if (version == "") { version = "1.0.0" }
+            let description = readlineSync.question('Description (empty) :')
+            let author = readlineSync.question('Author(s) (empty) :')
+            //
+            //
+            console.log("botn")
+            // Changing composant with project's name
+            fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
+                let jdata = JSON.parse(data);
+                jdata.name = projectName
+                jdata.version = version
+                jdata.description = description
+                jdata.author = author
+                fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata));
+            });
         });
     }
     else {
@@ -62,73 +80,4 @@ if (program.args.length == 0) {
 }
 else {
     log.error("Unknow arguments");
-}
-
-
-
-
-var http = require('http');
-
-
-var opt = {
-    headers: { 'User-Agent': 'Osef' }
-}
-
-/*
-var request = require('request');
-request('https://gitlab.com/api/v4/projects/4038613', opt, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-        let data = JSON.parse(body)
-        console.log(data) // Print the google web page.
-    }
-})
-*/
-
-//next();
-
-function next() {
-    //let v = controller.generate("home", "./", true, ["index", "up"]);
-    //console.log(v)
-    var ProgressBar = require('ascii-progress');
-
-    const { spawn } = require('child_process');
-    const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
-
-    var bar = new ProgressBar({
-        schema: '╢:bar╟ :percent :elapseds',
-        blank: '░',
-        filled: '█'
-    });
-
-    ls.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-    });
-
-    var iv;
-    t;
-
-
-    var getSize = require('get-folder-size');
-    ls.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
-
-        iv = setInterval(function () {
-            //bar.tick();
-            size = spawn('du', ['-sh', './test-express']);
-            size.stdout.on('data', function (data) {
-                log('size: ' + data);
-            });
-        }, 100);
-    });
-
-    ls.on('close', (code) => {
-        console.log(code)
-        clearInterval(iv);
-        console.log("\n");
-        console.log("fini");
-        size = spawn('du', ['-sh', './test-express']);
-        size.stdout.on('data', function (data) {
-            log('size: ' + data);
-        });
-    });
 }
