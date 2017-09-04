@@ -23,6 +23,7 @@ exports.generate = function (name, file, force, nomMethodes) {
     let fileName = file + name + "Controller.js";
     // Check if file already exists, in this case we 
     // need use approval to overwrite it
+
     if (fs.existsSync(fileName)) {
         if (force) {
             fs.writeFileSync(fileName, content);
@@ -30,7 +31,7 @@ exports.generate = function (name, file, force, nomMethodes) {
         }
         return false;
     } else {
-        fs.writeFileSync(fileName, content);
+        fs.appendFileSync(fileName, content);
         return true;
     }
 }

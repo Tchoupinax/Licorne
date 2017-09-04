@@ -19,29 +19,97 @@ exports.home = function () {
 
 
     rainbow("Commands :");
-    w.ln();
-    write("\t version");
-    write("\t new [project-name]");
+    console.log();
+    console.log("\t version");
+    console.log("\t new [ project-name ]");
+    console.log("\t generate [ controller | model ]");
+    console.log();
+    console.log();
+    console.log();
+    console.log();
 }
 //
 exports.new = function () {
-    let size = 40;
-    let direction = true;
-    log.p("Création d'un nouveau project en cours ...")
-    let left = "╢";
-    let right = "╟";
-    let empty = ' ';
-    let middle = '░';
-    let filled = '█';
-    let display = [left];
-    for (var i = 0; i < size; i++) {
-        display.push(empty);
-    }
-    display.push(right);
-    let string = "LICORNE"
-    let j = 1
-    display[1] = filled;
+    //
+    //
+    // Variables
+    let projectName;
+    //
+    //
+    // Dowloading source and rename project directory 
+    log.print("Creating a new project.");
+    const { spawn } = require('child_process');
+    const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
+    log.print("Downloading source....");
 
+    ls.stderr.on('close', (data) => {
+        if (program.new === true) {
+            projectName = readlineSync.question('Project\'s name :');
+            exec2("mv ./test-express " + projectName);
+        }
+        else {
+            exec2("mv ./test-express " + program.new);
+            projectName = program.new;
+        }
+        let version = readlineSync.question('Version (1.0.0) :');
+        if (version == "") { version = "1.0.0" }
+        let description = readlineSync.question('Description (empty) :')
+        let author = readlineSync.question('Author(s) (empty) :')
+        //
+        //
+        // Changing composant with project's name
+        fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
+            let jdata = JSON.parse(data);
+            jdata.name = projectName
+            jdata.version = version
+            jdata.description = description
+            jdata.author = author
+            fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata));
+        });
+    });
+}
+
+exports.generate = function () {
+    if (fs.existsSync("./Controller/") && fs.existsSync("./package.json")) {
+        if (program.generate === true) {
+            log.error("What do you want to generate ?");
+            log.printgray('Usage : licorne generate controller controllerName [action]');
+        }
+        else if (program.generate == "controller") {
+            if (program.args.length == 0) {
+                log.error("Controller's name is missing");
+                log.printgray('Usage : licorne generate controller controllerName [action]');
+            }
+            let name = program.args[0];
+            let arguments = [];
+            for (var i = 1; i < program.args.length; i++) {
+                arguments.push(program.args[i]);
+            }
+            // Verify if a file same named does not exist
+            if (controller.generate(name, "./Controller/", false, arguments)) {
+                log.print("Controller created successfully !");
+            }
+            else {
+                log.error("A file with same name already exists");
+                log.print("Do you want to overwrite this file anyway ?");
+                let answer = readlineSync.question('Overwrite ? [y/N]');
+                if (answer == "y" || answer == "yes") {
+                    controller.generate(name, "./Controller/", true, arguments);
+                    log.print("File overwrited");
+                }
+                else {
+                    log.print("Nothing performed");
+                }
+            }
+        }
+        else {
+            log.error("Invalid option");
+            log.printgray("Valid options are : controller - model");
+        }
+    }
+    else {
+        log.error("You are not in the root path");
+    }
 }
 
 

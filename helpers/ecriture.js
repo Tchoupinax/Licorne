@@ -2,14 +2,14 @@
  *   Write + endline
  */
 exports.write = function (msg) {
-    console.log(msg)
+    return (msg + "\n")
 }
 
 /*
  *   Simple endline
  */
 exports.ln = function () {
-    console.log("\n")
+    return ("\n")
 }
 
 /*
