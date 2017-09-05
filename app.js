@@ -6,7 +6,7 @@ let controller = require('./generate/controller');
 
 let exec = require('./helpers/exec.js');
 
-var readlineSync = require('readline-sync');
+
 
 let fs = require('fs');
 program
@@ -24,13 +24,13 @@ program
 // 
 // Check if a known propertie exists
 
-let exec2 = require('child_process').exec;
+
 
 if (program.new) {
-    exec.new();
+    exec.new(program);
 }
 else if (program.generate) {
-    exec.generate();
+    exec.generate(program);
 }
 else {
     exec.home();

@@ -5,7 +5,11 @@ let cursor = require('ansi')(process.stdout);
 let rainbow = require('./ecriture').rainbow;
 let write = require('./ecriture').write;
 let w = require('./ecriture');
+var readlineSync = require('readline-sync');
+let exec2 = require('child_process').exec;
 
+let fs = require('fs');
+let controller = require('../generate/controller')
 //
 exports.home = function () {
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
@@ -29,7 +33,7 @@ exports.home = function () {
     console.log();
 }
 //
-exports.new = function () {
+exports.new = function (program) {
     //
     //
     // Variables
@@ -60,17 +64,17 @@ exports.new = function () {
         // Changing composant with project's name
         fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
             let jdata = JSON.parse(data);
-            jdata.name = projectName
+            jdata.name = projectName.toLowerCase();
             jdata.version = version
             jdata.description = description
             jdata.author = author
-            fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata));
+            fs.appendFile("./" + projectName + "/package.json", JSON.stringify(jdata));
         });
     });
 }
 
-exports.generate = function () {
-    if (fs.existsSync("./Controller/") && fs.existsSync("./package.json")) {
+exports.generate = function (program) {
+    if (fs.existsSync("./controllers/") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
             log.error("What do you want to generate ?");
             log.printgray('Usage : licorne generate controller controllerName [action]');
