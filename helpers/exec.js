@@ -66,7 +66,8 @@ exports.new = function (program) {
     let projectName;
     // Dowloading source and rename project directory 
     log.print("Creating a new project.");
-    const ls = exec('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
+    const { spawn } = require('child_process');
+    const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
     log.print("Downloading source....");
     // When dowloading is finished
     ls.stderr.on('close', (data) => {
