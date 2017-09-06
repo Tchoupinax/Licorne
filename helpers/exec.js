@@ -104,12 +104,11 @@ exports.new = function (program) {
 //
 //      G E N E R A T E
 exports.generate = function (program) {
-    if (fs.existsSync("./controllers/") && fs.existsSync("./package.json")) {
+    if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
             log.error("What do you want to generate ?");
             log.printgray('Usage : licorne generate controller controllerName [action]');
         } else if (program.generate == "controller") {
-            log.debug(program.args.length);
             if (program.args.length == 0) {
                 log.error("Controller's name is missing");
                 log.printgray('Usage : licorne generate controller controllerName [action]');
@@ -120,15 +119,17 @@ exports.generate = function (program) {
                     arguments.push(program.args[i]);
                 }
                 // Verify if a file same named does not exist
-                if (controller.generate(name, "./controllers/", false, arguments)) {
+                if (controller.generate(name, "./app/controllers/", false, arguments)) {
                     log.print("Controller created successfully !");
+                    addControllerToRouteFile(name);
                 } else {
                     log.error("A file with same name already exists");
                     log.print("Do you want to overwrite this file anyway ?");
                     let answer = readlineSync.question('Overwrite ? [y/N]');
                     if (answer == "y" || answer == "yes") {
-                        controller.generate(name, "./controllers/", true, arguments);
+                        controller.generate(name, "./app/controllers/", true, arguments);
                         log.print("File overwrited");
+                        addControllerToRouteFile(name);
                     } else {
                         log.print("Nothing performed");
                     }
@@ -141,4 +142,32 @@ exports.generate = function (program) {
     } else {
         log.error("You are not in the root path");
     }
+}
+//
+//
+//
+/*
+ * ===============================================================
+ * ==== P R I V A T E ============================================
+ * ===============================================================
+ */
+function addControllerToRouteFile(nameController) {
+    console.log("./config/routes.js")
+    let data = fs.readFileSync("./config/routes.js", 'utf8').toString().split("\n");
+    let index = 0;
+    while (data[index] !== "") {
+        index++;
+    }
+    if (data[index] === "" && data[index + 1].includes("var")) {
+        data[index] = "TEST";
+    }
+    else {
+        data.splice(index, 0, "TEST");
+    }
+    let text = data.join("\n");
+    fs.writeFile("./config/routes.js", text, function (err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
 }
