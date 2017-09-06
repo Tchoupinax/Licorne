@@ -10,7 +10,7 @@ var readlineSync = require('readline-sync'); // Questionning user
 let exec = require('child_process').exec; // Perform bash operation
 /*
  * ===============================================================
- * ==== I N C L U D E S =========================================+
+ * ==== I N C L U D E S ==========================================
  * ===============================================================
  */
 let rainbow = require('./ecriture').rainbow; // Write rainbow
@@ -35,7 +35,7 @@ let controller = require('../generate/controller'); // Controller generator
 //
 // 
 //      H O M E
-exports.home = function() {
+exports.home = function () {
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
     console.log();
     rainbow('                    E');
@@ -47,8 +47,6 @@ exports.home = function() {
     rainbow('      //    \      \\');
     rainbow('     |||     | .  .|');
     rainbow('    ///     / \___/');
-
-
     console.log();
     rainbow("Commands :");
     console.log();
@@ -63,13 +61,9 @@ exports.home = function() {
 //
 //
 //      N E W
-exports.new = function(program) {
-    //
-    //
+exports.new = function (program) {
     // Variables
     let projectName;
-    //
-    //
     // Dowloading source and rename project directory 
     log.print("Creating a new project.");
     const { spawn } = require('child_process');
@@ -88,10 +82,10 @@ exports.new = function(program) {
         if (version == "") { version = "1.0.0" }
         let description = readlineSync.question('Description (empty) :')
         let author = readlineSync.question('Author(s) (empty) :')
-            //
-            //
-            // Changing composant with project's name
-        fs.readFile("./" + projectName + "/package.json", 'utf8', function(err, data) {
+        //
+        //
+        // Changing composant with project's name
+        fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
             let jdata = JSON.parse(data);
             jdata.name = projectName.toLowerCase();
             jdata.version = version
@@ -104,7 +98,7 @@ exports.new = function(program) {
 //
 //
 //      G E N E R A T E
-exports.generate = function(program) {
+exports.generate = function (program) {
     if (fs.existsSync("./controllers/") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
             log.error("What do you want to generate ?");
