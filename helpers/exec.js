@@ -35,12 +35,7 @@ const controller = require('../generate/controller'); // Controller generator
 //
 // 
 //      H O M E
-<<<<<<< HEAD
 exports.home = function () {
-=======
-// Display welcome screen with command helper
-exports.home = function() {
->>>>>>> ec740cdf8b1cfb1477264643bd322734fdc61114
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
     console.log();
     rainbow('                    E');
@@ -66,11 +61,7 @@ exports.home = function() {
 //
 //
 //      N E W
-<<<<<<< HEAD
 exports.new = function (program) {
-=======
-exports.new = function(program) {
->>>>>>> ec740cdf8b1cfb1477264643bd322734fdc61114
     // Variables
     let projectName;
     // Dowloading source and rename project directory 
