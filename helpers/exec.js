@@ -3,18 +3,18 @@
  * ==== D E P E N D A N C I E S ==================================
  * ===============================================================
  */
-let fs = require('fs'); // Manage files
-let log = require('./log'); // Custom logging system
-let cursor = require('ansi')(process.stdout); // Allow to custom cursor color
-var readlineSync = require('readline-sync'); // Questionning user
-let exec = require('child_process').exec; // Perform bash operation
+const fs = require('fs'); // Manage files
+const log = require('./log'); // Custom logging system
+const cursor = require('ansi')(process.stdout); // Allow to custom cursor color
+const readlineSync = require('readline-sync'); // Questionning user
+const exec = require('child_process').exec; // Perform bash operation
 /*
  * ===============================================================
  * ==== I N C L U D E S =========================================+
  * ===============================================================
  */
-let rainbow = require('./ecriture').rainbow; // Write rainbow
-let controller = require('../generate/controller'); // Controller generator
+const rainbow = require('./ecriture').rainbow; // Write rainbow
+const controller = require('../generate/controller'); // Controller generator
 //
 //
 //
@@ -35,6 +35,7 @@ let controller = require('../generate/controller'); // Controller generator
 //
 // 
 //      H O M E
+// Display welcome screen with command helper
 exports.home = function() {
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
     console.log();
@@ -47,8 +48,6 @@ exports.home = function() {
     rainbow('      //    \      \\');
     rainbow('     |||     | .  .|');
     rainbow('    ///     / \___/');
-
-
     console.log();
     rainbow("Commands :");
     console.log();
@@ -64,33 +63,33 @@ exports.home = function() {
 //
 //      N E W
 exports.new = function(program) {
-    //
-    //
     // Variables
     let projectName;
-    //
-    //
     // Dowloading source and rename project directory 
     log.print("Creating a new project.");
-    const { spawn } = require('child_process');
-    const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
+    const ls = exec('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
     log.print("Downloading source....");
-
+    // When dowloading is finished
     ls.stderr.on('close', (data) => {
+        // If there is no name specified
         if (program.new === true) {
+            // Asking project's name to user
             projectName = readlineSync.question('Project\'s name :');
+            // Changing project's name
             exec("mv ./test-express " + projectName);
         } else {
+            // Changing project's name
             exec("mv ./test-express " + program.new);
             projectName = program.new;
         }
+        // Asking some information
         let version = readlineSync.question('Version (1.0.0) :');
-        if (version == "") { version = "1.0.0" }
-        let description = readlineSync.question('Description (empty) :')
-        let author = readlineSync.question('Author(s) (empty) :')
-            //
-            //
-            // Changing composant with project's name
+        if (version == "") { version = "1.0.0" };
+        let description = readlineSync.question('Description (empty) :');
+        let author = readlineSync.question('Author(s) (empty) :');
+        //
+        //
+        // Changing composant with project's name
         fs.readFile("./" + projectName + "/package.json", 'utf8', function(err, data) {
             let jdata = JSON.parse(data);
             jdata.name = projectName.toLowerCase();
