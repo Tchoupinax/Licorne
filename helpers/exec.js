@@ -35,7 +35,7 @@ const controller = require('../generate/controller'); // Controller generator
 //
 // 
 //      H O M E
-exports.home = function() {
+exports.home = function () {
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
     console.log();
     rainbow('                    E');
@@ -61,7 +61,7 @@ exports.home = function() {
 //
 //
 //      N E W
-exports.new = function(program) {
+exports.new = function (program) {
     // Variables
     let projectName;
     // Dowloading source and rename project directory 
@@ -87,10 +87,10 @@ exports.new = function(program) {
         if (version == "") { version = "1.0.0" }
         let description = readlineSync.question('Description (empty) :')
         let author = readlineSync.question('Author(s) (empty) :')
-            //
-            //
-            // Changing composant with project's name
-        fs.readFile("./" + projectName + "/package.json", 'utf8', function(err, data) {
+        //
+        //
+        // Changing composant with project's name
+        fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
             let jdata = JSON.parse(data);
             jdata.name = projectName.toLowerCase();
             jdata.version = version
@@ -103,7 +103,7 @@ exports.new = function(program) {
 //
 //
 //      G E N E R A T E
-exports.generate = function(program) {
+exports.generate = function (program) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
             log.error("What do you want to generate ?");
@@ -157,22 +157,22 @@ exports.generate = function(program) {
 //
 //
 //      R O U T E
-exports.route = function(program) {
-    if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
-        if (program.route === true) {
-            log.error("Argument is missing");
-            log.printgray('Usage : licorne route list');
-        } else {
-            if (program === "list") {
-
-                displayRouteInArray();
-            } else {
-                log.error("Invalid option");
-                log.printgray("Valid options are : list");
-            }
-        }
+exports.route = function (program) {
+    if (program.route === true) {
+        log.error("Argument is missing");
+        log.printgray('Usage : licorne route list');
     } else {
-        log.error("You are not in the root path");
+        if (program.route === "list") {
+            // On require en se plaçant dans le chemin du projet
+            const data = require(require("shelljs").pwd().stdout + "/config/routes");;
+            // Call the function with "" for starting the tree
+            routes = [];
+            showRoute(data, "")
+            displayRouteInArray(routes);
+        } else {
+            log.error("Invalid option");
+            log.printgray("Valid options are : list");
+        }
     }
 };
 //
@@ -196,49 +196,75 @@ function addControllerToRouteFile(nameController) {
         data.splice(index, 0, "var " + nameController + " = require('../app/controller/" + nameController + "Controller')");
     }
     let text = data.join("\n");
-    fs.writeFile("./config/routes.js", text, function(err) {
+    fs.writeFile("./config/routes.js", text, function (err) {
         if (err) {
             return console.log(err);
         }
     });
 }
 
-function displayRouteInArray() {
-    //
+function displayRouteInArray(routes) {
+    let columnSize = {
+        Name: 0,
+        Url: 0,
+        Method: "Methode".length,
+        Target: 0
+    };
+    for (let i = 0; i < routes.length; i++) {
+        if (routes[i].name.length > columnSize.Name) {
+            columnSize.Name = routes[i].name.length;
+        }
+        if (routes[i].pattern.length > columnSize.Url) {
+            columnSize.Url = routes[i].pattern.length + 1;
+        }
+        if (routes[i].view.name.length > columnSize.Target) {
+            columnSize.Target = routes[i].view.name.length + 1;
+        }
+    }
     let headers = [
         "Name",
-        "Target",
-        "Yoann",
-        "Eok"
-    ]
+        "Url",
+        "Method",
+        "Target"
+    ];
+    //
+    // Draw top borderline
     let display = "";
-
     for (let i = 0; i < headers.length; i++) {
-        display += "+" + getNthHyphen(headers[i].length + 4);
+        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + 4);
     }
-    display += "+";
+    display += "+".rainbow;
     display += "\n";
+    //
+    // Write headers
     for (let i = 0; i < headers.length; i++) {
-        display += "|" + "  " + headers[i].rainbow + "  ";
+        display += "|".rainbow + centerHeader(headers[i], columnSize[headers[i]]);
     }
-    display += "|";
+    display += "|".rainbow;
     display += "\n";
+    //
+    // Write header bottom borderline
     for (let i = 0; i < headers.length; i++) {
-        display += "+" + getNthHyphen(headers[i].length + 4);
+        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + 4);
     }
-    display += "+";
+    display += "+".rainbow;
     display += "\n";
-    for (let i = 0; i < 3; i++) {
-        for (let i = 0; i < headers.length; i++) {
-            display += "|" + "  " + headers[i].rainbow + "  ";
-        }
-        display += "|";
+    //
+    // Write array content
+    for (let i = 0; i < routes.length; i++) {
+        display += "|".rainbow + centerString(routes[i].name, columnSize[headers[0]]) + "|".rainbow +
+            centerString(routes[i].pattern, columnSize[headers[1]]) + "|".rainbow +
+            centerString(routes[i].method.toUpperCase(), columnSize[headers[2]]) + "|".rainbow +
+            centerString(routes[i].view.name, columnSize[headers[3]]);
+        display += "|".rainbow;
         display += "\n";
     }
+    //
+    // Write bottom borderline
     for (let i = 0; i < headers.length; i++) {
-        display += "+" + getNthHyphen(headers[i].length + 4);
+        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + 4);
     }
-    display += "+";
+    display += "+".rainbow;
     console.log(display);
 }
 
@@ -247,5 +273,57 @@ function getNthHyphen(n) {
     for (let i = 0; i < n; i++) {
         s += "-"
     }
-    return s;
+    return s.rainbow;
+}
+
+function showRoute(parent, path) {
+    for (child in parent) {
+        if (isNaN(child)) {
+            if (child === "*") { showRoute(parent[child], ""); }
+            else { showRoute(parent[child], path + "/" + child); }
+        } else {
+            parent[child].pattern = path + parent[child].pattern
+            routes.push(parent[child])
+        }
+    }
+}
+
+function centerHeader(string, size) {
+    size -= string.length;
+    size += 4;
+    if (string.length % 2 == 0) {
+        let space = "";
+        for (let i = 0; i < size / 2; i++) {
+            space += " ";
+        }
+        return space + string.rainbow + space.substring(1, space.length);
+    }
+    else {
+        let space = "";
+        for (let i = 0; i < size / 2; i++) {
+            space += " ";
+        }
+        return space + string.rainbow + space;
+    }
+}
+function centerString(string, size) {
+    size -= string.length;
+    size += 4;
+    if (string.length % 2 == 0) {
+        let space = "";
+        for (let i = 0; i < size / 2; i++) {
+            space += " ";
+        }
+        if (string === "POST") { string = string.yellow }
+
+        return space + string + space.substring(1, space.length);
+    }
+    else {
+        let space = "";
+        for (let i = 0; i < size / 2; i++) {
+            space += " ";
+        }
+        if (string === "GET") { string = string.magenta }
+        return space + string + space;
+    }
 }

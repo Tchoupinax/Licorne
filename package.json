@@ -14,6 +14,7 @@
         "colors": "^1.1.2",
         "commander": "^2.11.0",
         "readline-sync": "^1.4.7",
+        "shelljs": "^0.7.8",
         "single-line-log": "^1.1.2"
     }
 }

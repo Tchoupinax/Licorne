@@ -29,7 +29,7 @@ program
 
 if (program.new) {
     exec.new(program);
-} else {
+} else if (program.generate || program.route) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate) {
             exec.generate(program);
@@ -41,4 +41,6 @@ if (program.new) {
     } else {
         log.error("You are not in the root path");
     }
+} else {
+    exec.home();
 }
