@@ -158,11 +158,21 @@ exports.generate = function(program) {
 //
 //      R O U T E
 exports.route = function(program) {
-    if (program.route === true) {
-        log.error("Argument is missing");
-        log.printgray('Usage : licorne route list');
+    if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
+        if (program.route === true) {
+            log.error("Argument is missing");
+            log.printgray('Usage : licorne route list');
+        } else {
+            if (program === "list") {
+
+                displayRouteInArray();
+            } else {
+                log.error("Invalid option");
+                log.printgray("Valid options are : list");
+            }
+        }
     } else {
-        displayRouteInArray();
+        log.error("You are not in the root path");
     }
 };
 //

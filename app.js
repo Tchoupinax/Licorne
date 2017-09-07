@@ -29,10 +29,16 @@ program
 
 if (program.new) {
     exec.new(program);
-} else if (program.generate) {
-    exec.generate(program);
-} else if (program.route) {
-    exec.route(program);
 } else {
-    exec.home();
+    if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
+        if (program.generate) {
+            exec.generate(program);
+        } else if (program.route) {
+            exec.route(program);
+        } else {
+            exec.home();
+        }
+    } else {
+        log.error("You are not in the root path");
+    }
 }
