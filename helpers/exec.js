@@ -35,7 +35,7 @@ const controller = require('../generate/controller'); // Controller generator
 //
 // 
 //      H O M E
-exports.home = function () {
+exports.home = function() {
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
     console.log();
     rainbow('                    E');
@@ -61,7 +61,7 @@ exports.home = function () {
 //
 //
 //      N E W
-exports.new = function (program) {
+exports.new = function(program) {
     // Variables
     let projectName;
     // Dowloading source and rename project directory 
@@ -87,10 +87,10 @@ exports.new = function (program) {
         if (version == "") { version = "1.0.0" }
         let description = readlineSync.question('Description (empty) :')
         let author = readlineSync.question('Author(s) (empty) :')
-        //
-        //
-        // Changing composant with project's name
-        fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
+            //
+            //
+            // Changing composant with project's name
+        fs.readFile("./" + projectName + "/package.json", 'utf8', function(err, data) {
             let jdata = JSON.parse(data);
             jdata.name = projectName.toLowerCase();
             jdata.version = version
@@ -103,7 +103,7 @@ exports.new = function (program) {
 //
 //
 //      G E N E R A T E
-exports.generate = function (program) {
+exports.generate = function(program) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
             log.error("What do you want to generate ?");
@@ -129,10 +129,20 @@ exports.generate = function (program) {
                     if (answer == "y" || answer == "yes") {
                         controller.generate(name, "./app/controllers/", true, arguments);
                         log.print("File overwrited");
-                        addControllerToRouteFile(name);
                     } else {
                         log.print("Nothing performed");
                     }
+                }
+            }
+        } else if (program.generate == "route") {
+            if (program.args.length == 0) {
+                log.error("Route's name is missing");
+                log.printgray('Usage : licorne generate route routeName methode');
+            } else {
+                let name = program.args[0];
+                let arguments = [];
+                for (var i = 1; i < program.args.length; i++) {
+                    arguments.push(program.args[i]);
                 }
             }
         } else {
@@ -142,7 +152,7 @@ exports.generate = function (program) {
     } else {
         log.error("You are not in the root path");
     }
-}
+};
 //
 //
 //
@@ -152,20 +162,19 @@ exports.generate = function (program) {
  * ===============================================================
  */
 function addControllerToRouteFile(nameController) {
-    console.log("./config/routes.js")
+    nameController = nameController.toLowerCase();
     let data = fs.readFileSync("./config/routes.js", 'utf8').toString().split("\n");
     let index = 0;
     while (data[index] !== "") {
         index++;
     }
     if (data[index] === "" && data[index + 1].includes("var")) {
-        data[index] = "TEST";
-    }
-    else {
-        data.splice(index, 0, "TEST");
+        data[index] = "var " + nameController + "= require('../app/controller/" + nameController + "Controller'";
+    } else {
+        data.splice(index, 0, "var " + nameController + " = require('../app/controller/" + nameController + "Controller')");
     }
     let text = data.join("\n");
-    fs.writeFile("./config/routes.js", text, function (err) {
+    fs.writeFile("./config/routes.js", text, function(err) {
         if (err) {
             return console.log(err);
         }

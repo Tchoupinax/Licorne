@@ -8,16 +8,18 @@ let ln = require('../helpers/ecriture').ln;
  */
 // Export the method which allow to create a model of controller
 // in the specified file
-exports.generate = function (name, file, force, nomMethodes) {
+exports.generate = function(name, file, force, nomMethodes) {
     var content = "";
+    // Put name lowercase
+    name = name.toLowerCase();
 
-    content = head(name);
+    content = head(name[0].toUpperCase() + name.substring(1, name.length));
     for (nameFonction in nomMethodes) {
         content += writeMethod(nomMethodes[nameFonction])
     }
 
     content += write("}")
-    content += write("module.exports = " + name + "Controller")
+    content += write("module.exports = " + name[0].toUpperCase() + name.substring(1, name.length) + "Controller")
 
     let fs = require('fs');
     let fileName = file + name + "Controller.js";
@@ -82,7 +84,7 @@ function writeMethod(name) {
     }
     s += write("    // ***********************")
     s += write("    // ***********************")
-    s += write("    static " + name + "(req, res) {")
+    s += write("    static " + name.toLowerCase() + "(req, res) {")
     s += write("         // What to do ... ?")
     s += write("    }")
     return s
