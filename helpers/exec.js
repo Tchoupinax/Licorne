@@ -191,9 +191,9 @@ function addControllerToRouteFile(nameController) {
         index++;
     }
     if (data[index] === "" && data[index + 1].includes("var")) {
-        data[index] = "var " + nameController + "= require('../app/controller/" + nameController + "Controller'";
+        data[index] = "var " + nameController + "= require('../app/controllers/" + nameController + "Controller'";
     } else {
-        data.splice(index, 0, "var " + nameController + " = require('../app/controller/" + nameController + "Controller')");
+        data.splice(index, 0, "var " + nameController + " = require('../app/controllers/" + nameController + "Controller')");
     }
     let text = data.join("\n");
     fs.writeFile("./config/routes.js", text, function (err) {
@@ -204,6 +204,11 @@ function addControllerToRouteFile(nameController) {
 }
 
 function displayRouteInArray(routes) {
+    // Getting complete target from file
+    targetComplete = getCompleteTarget();
+
+
+
     let columnSize = {
         Name: 0,
         Url: 0,
@@ -217,8 +222,8 @@ function displayRouteInArray(routes) {
         if (routes[i].pattern.length > columnSize.Url) {
             columnSize.Url = routes[i].pattern.length + 1;
         }
-        if (routes[i].view.name.length > columnSize.Target) {
-            columnSize.Target = routes[i].view.name.length + 1;
+        if (targetComplete[i].length > columnSize.Target) {
+            columnSize.Target = targetComplete[i].length + 3;
         }
     }
     let headers = [
@@ -238,9 +243,9 @@ function displayRouteInArray(routes) {
     //
     // Write headers
     for (let i = 0; i < headers.length; i++) {
-        display += "|".rainbow + centerHeader(headers[i], columnSize[headers[i]]);
+        display += rainbowplusplus("|", i) + centerHeader(headers[i], columnSize[headers[i]]);
     }
-    display += "|".rainbow;
+    display += rainbowplusplus("|", headers.length);
     display += "\n";
     //
     // Write header bottom borderline
@@ -252,11 +257,12 @@ function displayRouteInArray(routes) {
     //
     // Write array content
     for (let i = 0; i < routes.length; i++) {
-        display += "|".rainbow + centerString(routes[i].name, columnSize[headers[0]]) + "|".rainbow +
-            centerString(routes[i].pattern, columnSize[headers[1]]) + "|".rainbow +
-            centerString(routes[i].method.toUpperCase(), columnSize[headers[2]]) + "|".rainbow +
-            centerString(routes[i].view.name, columnSize[headers[3]]);
-        display += "|".rainbow;
+
+        display += rainbowplusplus("|", i) + centerString(routes[i].name, columnSize[headers[0]]) + rainbowplusplus("|", i) +
+            centerString(routes[i].pattern, columnSize[headers[1]], true) + rainbowplusplus("|", i) +
+            centerString(routes[i].method.toUpperCase(), columnSize[headers[2]]) + rainbowplusplus("|", i) +
+            centerString(targetComplete[i], columnSize[headers[3]], true);
+        display += rainbowplusplus("|", i);
         display += "\n";
     }
     //
@@ -306,24 +312,55 @@ function centerHeader(string, size) {
         return space + string.rainbow + space;
     }
 }
-function centerString(string, size) {
-    size -= string.length;
-    size += 4;
-    if (string.length % 2 == 0) {
-        let space = "";
-        for (let i = 0; i < size / 2; i++) {
-            space += " ";
-        }
-        if (string === "POST") { string = string.yellow }
+function centerString(string, size, left) {
+    if (left !== true) {
+        size -= string.length;
+        size += 4;
+        if (string.length % 2 == 0) {
+            let space = "";
+            for (let i = 0; i < size / 2; i++) {
+                space += " ";
+            }
+            if (string === "POST") { string = string.yellow }
 
-        return space + string + space.substring(1, space.length);
+            return space + string + space.substring(1, space.length);
+        }
+        else {
+            let space = "";
+            for (let i = 0; i < size / 2; i++) {
+                space += " ";
+            }
+            if (string === "GET") { string = string.magenta }
+            return space + string + space;
+        }
     }
     else {
-        let space = "";
-        for (let i = 0; i < size / 2; i++) {
-            space += " ";
+        size += 4;
+        let returned = "  ";
+        returned += string
+        while (returned.length < size) {
+            returned += " ";
         }
-        if (string === "GET") { string = string.magenta }
-        return space + string + space;
+        return returned;
     }
+}
+
+function rainbowplusplus(char, index) {
+    let string = "";
+    for (let i = 0; i < index; i++) {
+        string += " ";
+    }
+    string += char;
+    string = string.rainbow;
+    return string.substring(index, string.length);
+}
+
+function getCompleteTarget() {
+    let file = fs.readFileSync('./config/routes.js', 'utf8');
+    let array = file.split("view: ");
+    let target = [];
+    for (let i = 1; i < array.length; i++) {
+        target.push(file.split("view: ")[i].split(" }")[0])
+    }
+    return target;
 }
