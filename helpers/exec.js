@@ -121,6 +121,7 @@ exports.generate = function(program) {
                 // Verify if a file same named does not exist
                 if (controller.generate(name, "./app/controllers/", false, arguments)) {
                     log.print("Controller created successfully !");
+                    log.print("It was automatically declared in route file")
                     addControllerToRouteFile(name);
                 } else {
                     log.error("A file with same name already exists");
@@ -155,6 +156,17 @@ exports.generate = function(program) {
 };
 //
 //
+//      R O U T E
+exports.route = function(program) {
+    if (program.route === true) {
+        log.error("Argument is missing");
+        log.printgray('Usage : licorne route list');
+    } else {
+        displayRouteInArray();
+    }
+};
+//
+//
 //
 /*
  * ===============================================================
@@ -179,4 +191,51 @@ function addControllerToRouteFile(nameController) {
             return console.log(err);
         }
     });
+}
+
+function displayRouteInArray() {
+    //
+    let headers = [
+        "Name",
+        "Target",
+        "Yoann",
+        "Eok"
+    ]
+    let display = "";
+
+    for (let i = 0; i < headers.length; i++) {
+        display += "+" + getNthHyphen(headers[i].length + 4);
+    }
+    display += "+";
+    display += "\n";
+    for (let i = 0; i < headers.length; i++) {
+        display += "|" + "  " + headers[i].rainbow + "  ";
+    }
+    display += "|";
+    display += "\n";
+    for (let i = 0; i < headers.length; i++) {
+        display += "+" + getNthHyphen(headers[i].length + 4);
+    }
+    display += "+";
+    display += "\n";
+    for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < headers.length; i++) {
+            display += "|" + "  " + headers[i].rainbow + "  ";
+        }
+        display += "|";
+        display += "\n";
+    }
+    for (let i = 0; i < headers.length; i++) {
+        display += "+" + getNthHyphen(headers[i].length + 4);
+    }
+    display += "+";
+    console.log(display);
+}
+
+function getNthHyphen(n) {
+    s = "";
+    for (let i = 0; i < n; i++) {
+        s += "-"
+    }
+    return s;
 }

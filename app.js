@@ -13,7 +13,7 @@ program
     .version(require('./package.json').version)
     .option('version', 'Displays current version')
     .option('generate [whatToGenerate], generate')
-    .option('list [route]', 'allows to list route')
+    .option('route [list]', 'allows to list route')
     .option('new [project name]', 'Create a new project')
     .parse(process.argv);
 
@@ -31,6 +31,8 @@ if (program.new) {
     exec.new(program);
 } else if (program.generate) {
     exec.generate(program);
-} else if (program.list) {} else {
+} else if (program.route) {
+    exec.route(program);
+} else {
     exec.home();
 }
