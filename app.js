@@ -12,9 +12,10 @@ let fs = require('fs');
 program
     .version(require('./package.json').version)
     .option('version', 'Displays current version')
+    .option('new [project name]', 'Create a new project')
+    .option('start [environnement]', 'launch a project')
     .option('generate [whatToGenerate], generate')
     .option('route [list]', 'allows to list route')
-    .option('new [project name]', 'Create a new project')
     .parse(process.argv);
 
 // Check arguments count. If argument is known by the application, 
@@ -29,12 +30,14 @@ program
 
 if (program.new) {
     exec.new(program);
-} else if (program.generate || program.route) {
+} else if (program.generate || program.route || program.start) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate) {
             exec.generate(program);
         } else if (program.route) {
             exec.route(program);
+        } else if (program.start) {
+            exec.start(program);
         } else {
             exec.home();
         }

@@ -58,6 +58,45 @@ exports.home = function () {
     console.log();
     console.log();
 };
+//      S T A R T
+exports.start = function (program) {
+    if (program.start === true) {
+
+    }
+    else {
+        if (program.start === "prod" || program.start === "production") {
+
+
+            var spawn = require('child_process').spawn,
+                serveur = spawn('node', ['server.js']);
+
+            serveur.stdout.on('data', function (data) {
+                // console.log((new Date()).getTime());
+                // console.log(data.toString().substring(0, data.toString().length - 5))
+                console.log(data.toString().substring(0, data.toString().length - 5))
+            });
+
+            serveur.stderr.on('data', function (data) {
+                // console.log((new Date()).getTime());
+                // console.log(data.toString().substring(0, data.toString().length - 5))
+                console.log(data.toString().substring(0, data.toString().length - 5))
+            });
+
+            serveur.on('exit', function (code) {
+                require("console-error");
+                //console.log('child process exited with code ' + code.toString());
+                console.error("App crashed ...")
+            })
+
+        }
+        else if (program.start === "dev" || program.start === "development") {
+            //exec("NODE_ENV='development' node server.js");
+        }
+        else {
+            log.error(program.start + " is not an accepted environnement")
+        }
+    }
+};
 //
 //
 //      N E W

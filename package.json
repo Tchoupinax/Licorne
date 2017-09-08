@@ -1,6 +1,6 @@
 {
     "name": "licorne",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
     "main": "app.js",
     "scripts": {
@@ -16,6 +16,9 @@
         "ansi": "^0.3.1",
         "colors": "^1.1.2",
         "commander": "^2.11.0",
+        "console-error": "0.0.4",
+        "console-info": "0.0.5",
+        "console-warn": "0.0.4",
         "readline-sync": "^1.4.7",
         "shelljs": "^0.7.8",
         "single-line-log": "^1.1.2"
