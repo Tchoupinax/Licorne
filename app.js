@@ -1,14 +1,24 @@
+/*
+ * ===============================================================
+ * ==== D E P E N D A N C I E S ==================================
+ * ===============================================================
+ */
 var program = require('commander');
 var colors = require('colors');
-var log = require('./helpers/log');
-
-let controller = require('./generate/controller');
-
-let exec = require('./helpers/exec.js');
-
-
-
 let fs = require('fs');
+/*
+ * ===============================================================
+ * ==== I N C L U D E S ==========================================
+ * ===============================================================
+ */
+var log = require('./helpers/log');
+let controller = require('./generate/controller');
+let exec = require('./helpers/exec.js');
+/*
+ * ===============================================================
+ * ==== A R G U R M E N T S   M A N A G E R ======================
+ * ===============================================================
+ */
 program
     .version(require('./package.json').version)
     .option('version', 'Displays current version')
@@ -17,20 +27,16 @@ program
     .option('generate [whatToGenerate], generate')
     .option('route [list]', 'allows to list route')
     .parse(process.argv);
-
-// Check arguments count. If argument is known by the application, 
-// it will stored as a property of "program". Else, it will be added 
-// in args array
-//
-// Today, there is 13 properties without any argument
-// 
-// Check if a known propertie exists
-
-
-
+/*
+* ===============================================================
+* ==== B O D Y ==================================================
+* ===============================================================
+*/
 if (program.new) {
     exec.new(program);
-} else if (program.generate || program.route || program.start) {
+}
+// Checking if we are at the good location
+else if (program.generate || program.route || program.start) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate) {
             exec.generate(program);

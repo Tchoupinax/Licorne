@@ -8,6 +8,7 @@ const log = require('./log'); // Custom logging system
 const cursor = require('ansi')(process.stdout); // Allow to custom cursor color
 const readlineSync = require('readline-sync'); // Questionning user
 const exec = require('child_process').exec; // Perform bash operation
+require("tchoupilog");
 /*
  * ===============================================================
  * ==== I N C L U D E S ==========================================
@@ -60,42 +61,57 @@ exports.home = function () {
 };
 //      S T A R T
 exports.start = function (program) {
-    if (program.start === true) {
-
+    // Keep the environnement
+    let env = "";
+    switch (program.start) {
+        case "prod":
+            env = "PROD";
+            break;
+        case "production":
+            env = "PROD";
+            break;
+        case "dev":
+            env = "DEV";
+            break;
+        case "developper":
+            env = "DEV";
+            break;
+        default:
+            env = "DEV";
+            break;
     }
+    // If no environnement is specified
+    if (program.start === true) {
+        console.info("No environnement specified, lauchning server by default")
+        console.debug("Serveur running with environnement : " + env);
+    }
+    // Verifying the given environnement
     else {
-        if (program.start === "prod" || program.start === "production") {
-
-
-            var spawn = require('child_process').spawn,
-                serveur = spawn('node', ['server.js']);
-
-            serveur.stdout.on('data', function (data) {
-                // console.log((new Date()).getTime());
-                // console.log(data.toString().substring(0, data.toString().length - 5))
-                console.log(data.toString().substring(0, data.toString().length - 5))
-            });
-
-            serveur.stderr.on('data', function (data) {
-                // console.log((new Date()).getTime());
-                // console.log(data.toString().substring(0, data.toString().length - 5))
-                console.log(data.toString().substring(0, data.toString().length - 5))
-            });
-
-            serveur.on('exit', function (code) {
-                require("console-error");
-                //console.log('child process exited with code ' + code.toString());
-                console.error("App crashed ...")
-            })
-
-        }
-        else if (program.start === "dev" || program.start === "development") {
-            //exec("NODE_ENV='development' node server.js");
+        if (program.start === "prod" || program.start === "production"
+            || program.start === "dev" || program.start === "development") {
+            console.debug("Serveur running with environnement : " + env);
         }
         else {
-            log.error(program.start + " is not an accepted environnement")
+            // Stopping the program because of unknow env
+            console.error("'" + program.start + "' is not an known environnement");
+            process.exit();
         }
     }
+    var spawn = require('child_process').spawn,
+        serveur = spawn('node', ['server.js']);
+
+    serveur.stdout.on('data', function (data) {
+        console.log(data.toString().substring(0, data.toString().length - 5))
+    });
+
+    serveur.stderr.on('data', function (data) {
+        console.log(data.toString().substring(0, data.toString().length - 5))
+    });
+
+    serveur.on('exit', function (code) {
+        require("console-error");
+        console.error("App crashed ...")
+    });
 };
 //
 //

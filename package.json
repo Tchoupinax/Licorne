@@ -19,8 +19,11 @@
         "console-error": "0.0.4",
         "console-info": "0.0.5",
         "console-warn": "0.0.4",
+        "glob": "^7.1.2",
+        "path": "^0.12.7",
         "readline-sync": "^1.4.7",
         "shelljs": "^0.7.8",
-        "single-line-log": "^1.1.2"
+        "single-line-log": "^1.1.2",
+        "tchoupilog": "^1.0.3"
     }
 }
