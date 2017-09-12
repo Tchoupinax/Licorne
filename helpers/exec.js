@@ -121,7 +121,7 @@ exports.new = function(program) {
     // Variables
     let projectName;
     // Dowloading source and rename project directory 
-    log.print("Creating a new project.");
+    log.print("Creating a new project");
     const { spawn } = require('child_process');
     const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
     log.print("Downloading source....");
@@ -140,19 +140,31 @@ exports.new = function(program) {
         }
         // Asking some information
         let version = readlineSync.question('Version (1.0.0) :');
-        if (version == "") { version = "1.0.0" }
-        let description = readlineSync.question('Description (empty) :')
-        let author = readlineSync.question('Author(s) (empty) :')
-            //
-            //
-            // Changing composant with project's name
+        if (version == "") { version = "1.0.0"; }
+        let description = readlineSync.question('Description (empty) :');
+        let author = readlineSync.question('Author(s) (empty) :');
+        // Changing composant with project's name
         fs.readFile("./" + projectName + "/package.json", 'utf8', function(err, data) {
             let jdata = JSON.parse(data);
             jdata.name = projectName.toLowerCase();
             jdata.version = version
             jdata.description = description
             jdata.author = author
-            fs.appendFile("./" + projectName + "/package.json", JSON.stringify(jdata));
+            fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata, null, 4));
+        });
+        // Downloading Framework dependancies
+        var spawn = require('child_process').spawn,
+            serveur = spawn("cd ./" + projectName + " && npm install", {
+                shell: true
+            });
+        serveur.stdout.on('data', function(data) {
+            //console.log(data.toString().substring(0, data.toString().length - 5))
+        });
+        serveur.stderr.on('data', function(data) {
+            //console.log(data.toString().substring(0, data.toString().length - 5))
+        });
+        serveur.on('exit', function(code) {
+            console.info("Dependancies sucessfully downloaded");
         });
     });
 };
