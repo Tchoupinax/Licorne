@@ -60,36 +60,7 @@ exports.home = function() {
     console.log();
 };
 //      S T A R T
-<<<<<<< HEAD
 exports.start = function(program) {
-    if (program.start === true) {
-
-    } else {
-        if (program.start === "prod" || program.start === "production") {
-
-
-            var spawn = require('child_process').spawn,
-                serveur = spawn('node', ['server.js']);
-
-            serveur.stdout.on('data', function(data) {
-                console.log(data.toString().substring(0, data.toString().length - 5))
-            });
-
-            serveur.stderr.on('data', function(data) {
-                require("../../Tchoupilog/index");
-                console.log(data.toString().substring(0, data.toString().length - 5))
-            });
-
-            serveur.on('exit', function(code) {
-                console.error("App crashed ...")
-            })
-
-        } else if (program.start === "dev" || program.start === "development") {
-            //exec("NODE_ENV='development' node server.js");
-        } else {
-            log.error(program.start + " is not an accepted environnement")
-=======
-exports.start = function (program) {
     // Keep the environnement
     let env = "";
     switch (program.start) {
@@ -116,31 +87,31 @@ exports.start = function (program) {
     }
     // Verifying the given environnement
     else {
-        if (program.start === "prod" || program.start === "production"
-            || program.start === "dev" || program.start === "development") {
+        if (program.start === "prod" || program.start === "production" ||
+            program.start === "dev" || program.start === "development") {
             console.debug("Serveur running with environnement : " + env);
-        }
-        else {
+        } else {
             // Stopping the program because of unknow env
             console.error("'" + program.start + "' is not an known environnement");
             process.exit();
->>>>>>> 23275af07455407e76a5fcf7a87eeae082c78798
         }
     }
+    // Starting the serveur
     var spawn = require('child_process').spawn,
         serveur = spawn('node', ['server.js']);
-
-    serveur.stdout.on('data', function (data) {
+    // Listen data on standard output
+    serveur.stdout.on('data', function(data) {
         console.log(data.toString().substring(0, data.toString().length - 5))
     });
-
-    serveur.stderr.on('data', function (data) {
+    // ... and on error output
+    serveur.stderr.on('data', function(data) {
         console.log(data.toString().substring(0, data.toString().length - 5))
     });
-
-    serveur.on('exit', function (code) {
+    // Closing command when server crashed
+    serveur.on('exit', function(code) {
         require("console-error");
         console.error("App crashed ...")
+        process.exit();
     });
 };
 //
