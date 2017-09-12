@@ -269,7 +269,7 @@ function addControllerToRouteFile(nameController) {
     while (data[index].includes("var")) {
         index++;
     }
-    data.splice(index, 0, "var " + nameController + " = require('../app/controllers/" +
+    data.splice(index, 0, "var " + nameController + "Controller = require('../app/controllers/" +
         nameController + "Controller');");
     let text = data.join("\n");
     fs.writeFileSync("./config/routes.js", text);

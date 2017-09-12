@@ -16,10 +16,14 @@ exports.generate = function(name, file, force, nomMethodes) {
     content = head(name[0].toUpperCase() + name.substring(1, name.length));
     for (nameFonction in nomMethodes) {
         content += writeMethod(nomMethodes[nameFonction])
+        console.log(nomMethodes.length)
+        console.log(nameFonction)
+        if (nameFonction != nomMethodes.length - 1) {
+            content += "\n";
+        }
     }
     if (nomMethodes.length == 0) {
-        content += write("    // ***********************")
-        content += write("    // ***********************")
+        content += write("/*\n *\n */");
     }
 
     content += write("}")
@@ -51,6 +55,8 @@ function head(name) {
     //
     var s = "";
     var numberStart = 3;
+    //
+    s += "/*\n *    D E P E N D A N C I E S\n */\n\n";
     //
     s += write("/*");
     for (var i = 0; i < numberStart / 2 - 1; i++) {
@@ -86,9 +92,8 @@ function writeMethod(name) {
         s += ln()
 
     }
-    s += write("    // ***********************")
-    s += write("    // ***********************")
-    s += write("    static " + name.toLowerCase() + "(req, res) {")
+    s += write("    /*\n     *\n     */");
+    s += write("    static " + name + "(req, res) {")
     s += write("         // What to do ... ?")
     s += write("    }")
     return s
