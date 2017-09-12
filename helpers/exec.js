@@ -35,7 +35,7 @@ const controller = require('../generate/controller'); // Controller generator
 //
 // 
 //      H O M E
-exports.home = function () {
+exports.home = function() {
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
     console.log();
     rainbow('                    E');
@@ -59,40 +59,32 @@ exports.home = function () {
     console.log();
 };
 //      S T A R T
-exports.start = function (program) {
+exports.start = function(program) {
     if (program.start === true) {
 
-    }
-    else {
+    } else {
         if (program.start === "prod" || program.start === "production") {
 
 
             var spawn = require('child_process').spawn,
                 serveur = spawn('node', ['server.js']);
 
-            serveur.stdout.on('data', function (data) {
-                // console.log((new Date()).getTime());
-                // console.log(data.toString().substring(0, data.toString().length - 5))
+            serveur.stdout.on('data', function(data) {
                 console.log(data.toString().substring(0, data.toString().length - 5))
             });
 
-            serveur.stderr.on('data', function (data) {
-                // console.log((new Date()).getTime());
-                // console.log(data.toString().substring(0, data.toString().length - 5))
+            serveur.stderr.on('data', function(data) {
+                require("../../Tchoupilog/index");
                 console.log(data.toString().substring(0, data.toString().length - 5))
             });
 
-            serveur.on('exit', function (code) {
-                require("console-error");
-                //console.log('child process exited with code ' + code.toString());
+            serveur.on('exit', function(code) {
                 console.error("App crashed ...")
             })
 
-        }
-        else if (program.start === "dev" || program.start === "development") {
+        } else if (program.start === "dev" || program.start === "development") {
             //exec("NODE_ENV='development' node server.js");
-        }
-        else {
+        } else {
             log.error(program.start + " is not an accepted environnement")
         }
     }
@@ -100,7 +92,7 @@ exports.start = function (program) {
 //
 //
 //      N E W
-exports.new = function (program) {
+exports.new = function(program) {
     // Variables
     let projectName;
     // Dowloading source and rename project directory 
@@ -126,10 +118,10 @@ exports.new = function (program) {
         if (version == "") { version = "1.0.0" }
         let description = readlineSync.question('Description (empty) :')
         let author = readlineSync.question('Author(s) (empty) :')
-        //
-        //
-        // Changing composant with project's name
-        fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
+            //
+            //
+            // Changing composant with project's name
+        fs.readFile("./" + projectName + "/package.json", 'utf8', function(err, data) {
             let jdata = JSON.parse(data);
             jdata.name = projectName.toLowerCase();
             jdata.version = version
@@ -142,7 +134,7 @@ exports.new = function (program) {
 //
 //
 //      G E N E R A T E
-exports.generate = function (program) {
+exports.generate = function(program) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
             log.error("What do you want to generate ?");
@@ -196,7 +188,7 @@ exports.generate = function (program) {
 //
 //
 //      R O U T E
-exports.route = function (program) {
+exports.route = function(program) {
     if (program.route === true) {
         log.error("Argument is missing");
         log.printgray('Usage : licorne route list');
@@ -235,7 +227,7 @@ function addControllerToRouteFile(nameController) {
         data.splice(index, 0, "var " + nameController + " = require('../app/controllers/" + nameController + "Controller')");
     }
     let text = data.join("\n");
-    fs.writeFile("./config/routes.js", text, function (err) {
+    fs.writeFile("./config/routes.js", text, function(err) {
         if (err) {
             return console.log(err);
         }
@@ -324,8 +316,7 @@ function getNthHyphen(n) {
 function showRoute(parent, path) {
     for (child in parent) {
         if (isNaN(child)) {
-            if (child === "*") { showRoute(parent[child], ""); }
-            else { showRoute(parent[child], path + "/" + child); }
+            if (child === "*") { showRoute(parent[child], ""); } else { showRoute(parent[child], path + "/" + child); }
         } else {
             parent[child].pattern = path + parent[child].pattern
             routes.push(parent[child])
@@ -342,8 +333,7 @@ function centerHeader(string, size) {
             space += " ";
         }
         return space + string.rainbow + space.substring(1, space.length);
-    }
-    else {
+    } else {
         let space = "";
         for (let i = 0; i < size / 2; i++) {
             space += " ";
@@ -351,6 +341,7 @@ function centerHeader(string, size) {
         return space + string.rainbow + space;
     }
 }
+
 function centerString(string, size, left) {
     if (left !== true) {
         size -= string.length;
@@ -363,8 +354,7 @@ function centerString(string, size, left) {
             if (string === "POST") { string = string.yellow }
 
             return space + string + space.substring(1, space.length);
-        }
-        else {
+        } else {
             let space = "";
             for (let i = 0; i < size / 2; i++) {
                 space += " ";
@@ -372,8 +362,7 @@ function centerString(string, size, left) {
             if (string === "GET") { string = string.magenta }
             return space + string + space;
         }
-    }
-    else {
+    } else {
         size += 4;
         let returned = "  ";
         returned += string
