@@ -1,11 +1,12 @@
 {
     "name": "licorne",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "Command helpers for managing node js framework called \"Pony\"",
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node app.js"
+        "start": "node app.js",
+        "readme": "node ./node_modules/.bin/node-readme"
     },
     "bin": {
         "licorne": "./app.js"
@@ -13,11 +14,14 @@
     "author": {
         "name": "Tchoupinax"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Tchoupinax/Licorne#readme"
+    },
     "bugs": {
         "url": "https://github.com/Tchoupinax/Licorne/issues"
     },
     "homepage": "https://github.com/Tchoupinax/Licorne#readme",
-    "license": "ISC",
     "dependencies": {
         "ansi": "^0.3.1",
         "colors": "^1.1.2",
@@ -35,5 +39,8 @@
     "engines": {
         "node": ">=8.4.0",
         "npm": ">=5.4.1"
+    },
+    "devDependencies": {
+        "node-readme": "^0.1.9"
     }
 }
