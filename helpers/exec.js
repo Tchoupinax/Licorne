@@ -131,6 +131,10 @@ exports.new = function(program) {
         if (program.new === true) {
             // Asking project's name to user
             projectName = readlineSync.question('Project\'s name :');
+            while (projectName === "") {
+                console.error("Project'name can't be empty. Please fill it");
+                projectName = readlineSync.question('Project\'s name :');
+            }
             // Changing project's name
             exec("mv ./test-express " + projectName);
         } else {
