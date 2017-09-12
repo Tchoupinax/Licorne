@@ -52,10 +52,9 @@ exports.home = function() {
     rainbow("Commands :");
     console.log();
     console.log("\t version");
-    console.log("\t new [ project-name ]");
-    console.log("\t generate [ controller | model ]");
-    console.log();
-    console.log();
+    console.log("\t new [project-name]");
+    console.log("\t start [dev|prod]");
+    console.log("\t gen/generate [controller|model]");
     console.log();
     console.log();
 };
@@ -121,10 +120,10 @@ exports.new = function(program) {
     // Variables
     let projectName;
     // Dowloading source and rename project directory 
-    log.print("Creating a new project");
+    console.info("Creating a new project");
     const { spawn } = require('child_process');
     const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
-    log.print("Downloading source....");
+    console.info("Downloading source....");
     // When dowloading is finished
     ls.stderr.on('close', (data) => {
         // If there is no name specified
@@ -144,6 +143,10 @@ exports.new = function(program) {
         }
         // Asking some information
         let version = readlineSync.question('Version (1.0.0) :');
+        while (!version.match("[0-9]*\\.[0-9]*\\.[0-9]")) {
+            console.error("Version must seem like 1.0.0");
+            version = readlineSync.question('Version (1.0.0) :');
+        }
         if (version == "") { version = "1.0.0"; }
         let description = readlineSync.question('Description (empty) :');
         let author = readlineSync.question('Author(s) (empty) :');
@@ -178,12 +181,12 @@ exports.new = function(program) {
 exports.generate = function(program) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
-            log.error("What do you want to generate ?");
-            log.printgray('Usage : licorne generate controller controllerName [action]');
+            console.error("What do you want to generate ?");
+            console.info('Usage : licorne generate controller controllerName [action]');
         } else if (program.generate == "controller") {
             if (program.args.length == 0) {
-                log.error("Controller's name is missing");
-                log.printgray('Usage : licorne generate controller controllerName [action]');
+                console.error("Controller's name is missing");
+                console.info('Usage : licorne generate controller controllerName [action]');
             } else {
                 let name = program.args[0];
                 let arguments = [];
@@ -192,26 +195,26 @@ exports.generate = function(program) {
                 }
                 // Verify if a file same named does not exist
                 if (controller.generate(name, "./app/controllers/", false, arguments)) {
-                    log.print("Controller created successfully !");
-                    log.print("It was automatically declared in route file")
+                    console.info("Controller created successfully !");
+                    console.info("It was automatically declared in route file")
                     addControllerToRouteFile(name);
                     process.exit();
                 } else {
-                    log.error("A file with same name already exists");
-                    log.print("Do you want to overwrite this file anyway ?");
+                    console.error("A file with same name already exists");
+                    console.info("Do you want to overwrite this file anyway ?");
                     let answer = readlineSync.question('Overwrite ? [y/N]');
                     if (answer == "y" || answer == "yes") {
                         controller.generate(name, "./app/controllers/", true, arguments);
-                        log.print("File overwrited");
+                        console.info("File overwrited");
                     } else {
-                        log.print("Nothing performed");
+                        console.info("Nothing performed");
                     }
                 }
             }
         } else if (program.generate == "route") {
             if (program.args.length == 0) {
-                log.error("Route's name is missing");
-                log.printgray('Usage : licorne generate route routeName methode');
+                console.error("Route's name is missing");
+                console.info('Usage : licorne generate route routeName methode');
             } else {
                 let name = program.args[0];
                 let arguments = [];
@@ -220,11 +223,11 @@ exports.generate = function(program) {
                 }
             }
         } else {
-            log.error("Invalid option");
-            log.printgray("Valid options are : controller - model");
+            console.error("Invalid option");
+            console.info("Valid options are : controller - model");
         }
     } else {
-        log.error("You are not in the root path");
+        console.error("You are not in the root path");
     }
 };
 //
@@ -232,8 +235,8 @@ exports.generate = function(program) {
 //      R O U T E
 exports.route = function(program) {
     if (program.route === true) {
-        log.error("Argument is missing");
-        log.printgray('Usage : licorne route list');
+        console.error("Argument is missing");
+        console.info('Usage : licorne route list');
     } else {
         if (program.route === "list") {
             // On require en se plaçant dans le chemin du projet
@@ -243,8 +246,8 @@ exports.route = function(program) {
             showRoute(data, "")
             displayRouteInArray(routes);
         } else {
-            log.error("Invalid option");
-            log.printgray("Valid options are : list");
+            console.error("Invalid option");
+            console.info("Valid options are : list");
         }
     }
 };
@@ -275,9 +278,6 @@ function addControllerToRouteFile(nameController) {
 function displayRouteInArray(routes) {
     // Getting complete target from file
     targetComplete = getCompleteTarget();
-
-
-
     let columnSize = {
         Name: 0,
         Url: 0,

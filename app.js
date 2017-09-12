@@ -23,10 +23,10 @@ let exec = require('./helpers/exec.js');
  */
 program
     .version(require('./package.json').version)
-    .option('version', 'Displays current version')
+    .option('-v, version', 'Displays current version')
     .option('new [project name]', 'Create a new project')
     .option('start [environnement]', 'launch a project')
-    .option('generate [whatToGenerate], generate')
+    .option('gen, generate [whatToGenerate], generate')
     .option('route [list]', 'allows to list route')
     .parse(process.argv);
 /*

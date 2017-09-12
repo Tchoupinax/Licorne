@@ -17,6 +17,10 @@ exports.generate = function(name, file, force, nomMethodes) {
     for (nameFonction in nomMethodes) {
         content += writeMethod(nomMethodes[nameFonction])
     }
+    if (nomMethodes.length == 0) {
+        content += write("    // ***********************")
+        content += write("    // ***********************")
+    }
 
     content += write("}")
     content += write("module.exports = " + name[0].toUpperCase() + name.substring(1, name.length) + "Controller")
