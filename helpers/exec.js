@@ -195,6 +195,7 @@ exports.generate = function(program) {
                     log.print("Controller created successfully !");
                     log.print("It was automatically declared in route file")
                     addControllerToRouteFile(name);
+                    process.exit();
                 } else {
                     log.error("A file with same name already exists");
                     log.print("Do you want to overwrite this file anyway ?");
@@ -259,20 +260,16 @@ function addControllerToRouteFile(nameController) {
     nameController = nameController.toLowerCase();
     let data = fs.readFileSync("./config/routes.js", 'utf8').toString().split("\n");
     let index = 0;
-    while (data[index] !== "") {
+    while (!data[index].includes("var")) {
         index++;
     }
-    if (data[index] === "" && data[index + 1].includes("var")) {
-        data[index] = "var " + nameController + "= require('../app/controllers/" + nameController + "Controller'";
-    } else {
-        data.splice(index, 0, "var " + nameController + " = require('../app/controllers/" + nameController + "Controller')");
+    while (data[index].includes("var")) {
+        index++;
     }
+    data.splice(index, 0, "var " + nameController + " = require('../app/controllers/" +
+        nameController + "Controller');");
     let text = data.join("\n");
-    fs.writeFile("./config/routes.js", text, function(err) {
-        if (err) {
-            return console.log(err);
-        }
-    });
+    fs.writeFileSync("./config/routes.js", text);
 }
 
 function displayRouteInArray(routes) {
