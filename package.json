@@ -34,7 +34,7 @@
         "readline-sync": "^1.4.7",
         "shelljs": "^0.7.8",
         "single-line-log": "^1.1.2",
-        "tchoupilog": "^1.0.4"
+        "tchoupilog": "^1.0.6"
     },
     "engines": {
         "node": ">=8.4.0",
