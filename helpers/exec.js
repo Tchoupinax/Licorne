@@ -157,7 +157,7 @@ exports.new = function(program) {
             jdata.version = version
             jdata.description = description
             jdata.author = author
-            fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata, null, 4));
+            fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata, null, margin));
         });
         // Downloading Framework dependancies
         var spawn = require('child_process').spawn,
@@ -276,71 +276,80 @@ function addControllerToRouteFile(nameController) {
 }
 
 function displayRouteInArray(routes) {
-    // Getting complete target from file
-    targetComplete = getCompleteTarget();
-    let columnSize = {
-        Name: 0,
-        Url: 0,
-        Method: "Methode".length,
-        Target: 0
-    };
-    for (let i = 0; i < routes.length; i++) {
-        if (routes[i].name.length > columnSize.Name) {
-            columnSize.Name = routes[i].name.length;
-        }
-        if (routes[i].pattern.length > columnSize.Url) {
-            columnSize.Url = routes[i].pattern.length + 1;
-        }
-        if (targetComplete[i].length > columnSize.Target) {
-            columnSize.Target = targetComplete[i].length + 3;
-        }
-    }
+    // Declare margin size
+    let margin = 4;
+    // Default headers
     let headers = [
         "Name",
         "Url",
         "Method",
         "Target"
     ];
+    // Have to get manually routes's target from file because they are function...
+    // ... and we want to get their names and not their contents !
+    targetComplete = getCompleteTarget();
+    // We'll save the bigges size of words to determine column size
+    let columnSize = {
+        Name: 0,
+        Url: 0,
+        Method: "Method".length, // By default, "Method" size is greatest than GET, POST, PUT, DELETE...
+        Target: 0
+    }
+    for (let i = 0; i < routes.length; i++) {
+        if (routes[i].name.length > columnSize.Name) {
+            columnSize.Name = routes[i].name.length;
+        }
+        if (routes[i].pattern.length > columnSize.Url) {
+            columnSize.Url = routes[i].pattern.length;
+        }
+        if (targetComplete[i].length > columnSize.Target) {
+            columnSize.Target = targetComplete[i].length;
+        }
+    }
     //
     // Draw top borderline
     let display = "";
     for (let i = 0; i < headers.length; i++) {
-        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + 4);
+        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + margin);
     }
     display += "+".rainbow;
     display += "\n";
     //
     // Write headers
     for (let i = 0; i < headers.length; i++) {
-        display += rainbowplusplus("|", i) + centerHeader(headers[i], columnSize[headers[i]]);
+        display += rainbowplusplus("|", i) + centerHeader(headers[i], columnSize[headers[i]] + margin);
     }
     display += rainbowplusplus("|", headers.length);
     display += "\n";
     //
     // Write header bottom borderline
     for (let i = 0; i < headers.length; i++) {
-        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + 4);
+        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + margin);
     }
     display += "+".rainbow;
     display += "\n";
     //
     // Write array content
     for (let i = 0; i < routes.length; i++) {
-
-        display += rainbowplusplus("|", i) + centerString(routes[i].name, columnSize[headers[0]]) + rainbowplusplus("|", i) +
-            centerString(routes[i].pattern, columnSize[headers[1]], true) + rainbowplusplus("|", i) +
-            centerString(routes[i].method.toUpperCase(), columnSize[headers[2]]) + rainbowplusplus("|", i) +
-            centerString(targetComplete[i], columnSize[headers[3]], true);
+        display += rainbowplusplus("|", i) +
+            centerString(routes[i].name, columnSize[headers[0]] + margin, true, routes[i].method.toUpperCase()) +
+            rainbowplusplus("|", i) +
+            centerString(routes[i].pattern, columnSize[headers[1]] + margin, true, routes[i].method.toUpperCase()) +
+            rainbowplusplus("|", i) +
+            centerString(routes[i].method.toUpperCase(), columnSize[headers[2]] + margin, false, routes[i].method.toUpperCase()) +
+            rainbowplusplus("|", i) +
+            centerString(targetComplete[i], columnSize[headers[3]] + margin, true, routes[i].method.toUpperCase());
         display += rainbowplusplus("|", i);
         display += "\n";
     }
     //
     // Write bottom borderline
     for (let i = 0; i < headers.length; i++) {
-        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + 4);
+        display += "+".rainbow + getNthHyphen(columnSize[headers[i]] + margin);
     }
     display += "+".rainbow;
     console.log(display);
+    process.exit(0);
 }
 
 function getNthHyphen(n) {
@@ -362,55 +371,6 @@ function showRoute(parent, path) {
     }
 }
 
-function centerHeader(string, size) {
-    size -= string.length;
-    size += 4;
-    if (string.length % 2 == 0) {
-        let space = "";
-        for (let i = 0; i < size / 2; i++) {
-            space += " ";
-        }
-        return space + string.rainbow + space.substring(1, space.length);
-    } else {
-        let space = "";
-        for (let i = 0; i < size / 2; i++) {
-            space += " ";
-        }
-        return space + string.rainbow + space;
-    }
-}
-
-function centerString(string, size, left) {
-    if (left !== true) {
-        size -= string.length;
-        size += 4;
-        if (string.length % 2 == 0) {
-            let space = "";
-            for (let i = 0; i < size / 2; i++) {
-                space += " ";
-            }
-            if (string === "POST") { string = string.yellow }
-
-            return space + string + space.substring(1, space.length);
-        } else {
-            let space = "";
-            for (let i = 0; i < size / 2; i++) {
-                space += " ";
-            }
-            if (string === "GET") { string = string.magenta }
-            return space + string + space;
-        }
-    } else {
-        size += 4;
-        let returned = "  ";
-        returned += string
-        while (returned.length < size) {
-            returned += " ";
-        }
-        return returned;
-    }
-}
-
 function rainbowplusplus(char, index) {
     let string = "";
     for (let i = 0; i < index; i++) {
@@ -429,4 +389,55 @@ function getCompleteTarget() {
         target.push(file.split("view: ")[i].split(" }")[0])
     }
     return target;
+}
+
+function centerHeader(string, size) {
+    let space = " ";
+    while (space.length + string.length <= size) {
+        space += " ";
+    }
+    let s = space.substring(0, space.length / 2);
+    if (s.length * 2 == space.length) {
+        return s + string.rainbow + s.substring(1, s.length);
+    }
+    return s + string.rainbow + s;
+}
+
+function centerString(string, size, left, method) {
+    if (left) {
+        let returned = "  " + string;
+        while (returned.length < size) {
+            returned += " ";
+        }
+        if (method === "GET") {
+            return returned.blue;
+        } else if (method === "POST") {
+            return returned.yellow;
+        } else if (method === "PUT") {
+            return returned.green;
+        } else if (method === "DELETE") {
+            return returned.red;
+        }
+    } else {
+        let space = "";
+        while (space.length + string.length < size) {
+            space += " ";
+        }
+        let s = space.substring(0, space.length / 2);
+        if (string.length % 2 != 0) {
+            if (string === "GET") {
+                return s + string.blue + s + " ";
+            } else if (string === "PUT") {
+                return s + string.green + s + " ";
+            } else {
+                return s + string + s + " ";
+            }
+        } else {
+            if (string === "POST") {
+                return s + string.yellow + s;
+            } else if (string === "DELETE") {
+                return s + string.red + s;
+            }
+        }
+    }
 }
