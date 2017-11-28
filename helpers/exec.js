@@ -36,7 +36,7 @@ const controller = require('../generate/controller'); // Controller generator
 //
 // 
 //      H O M E
-exports.home = function() {
+exports.home = function () {
     rainbow('████████████████████████████████████████████████████████████████████████████████████████');
     console.log();
     rainbow('                    E');
@@ -59,7 +59,7 @@ exports.home = function() {
     console.log();
 };
 //      S T A R T
-exports.start = function(program) {
+exports.start = function (program) {
     // Keep the environnement
     let env = "";
     switch (program.start) {
@@ -99,15 +99,15 @@ exports.start = function(program) {
     var spawn = require('child_process').spawn,
         serveur = spawn('node', ['server.js']);
     // Listen data on standard output
-    serveur.stdout.on('data', function(data) {
+    serveur.stdout.on('data', function (data) {
         console.log(data.toString().substring(0, data.toString().length - 5))
     });
     // ... and on error output
-    serveur.stderr.on('data', function(data) {
+    serveur.stderr.on('data', function (data) {
         console.log(data.toString().substring(0, data.toString().length - 5))
     });
     // Closing command when server crashed
-    serveur.on('exit', function(code) {
+    serveur.on('exit', function (code) {
         require("console-error");
         console.error("App crashed ...")
         process.exit();
@@ -116,7 +116,7 @@ exports.start = function(program) {
 //
 //
 //      N E W
-exports.new = function(program) {
+exports.new = function (program) {
     // Variables
     let projectName;
     // Dowloading source and rename project directory 
@@ -151,7 +151,7 @@ exports.new = function(program) {
         let description = readlineSync.question('Description (empty) :');
         let author = readlineSync.question('Author(s) (empty) :');
         // Changing composant with project's name
-        fs.readFile("./" + projectName + "/package.json", 'utf8', function(err, data) {
+        fs.readFile("./" + projectName + "/package.json", 'utf8', function (err, data) {
             let jdata = JSON.parse(data);
             jdata.name = projectName.toLowerCase();
             jdata.version = version
@@ -164,13 +164,13 @@ exports.new = function(program) {
             serveur = spawn("cd ./" + projectName + " && npm install", {
                 shell: true
             });
-        serveur.stdout.on('data', function(data) {
+        serveur.stdout.on('data', function (data) {
             //console.log(data.toString().substring(0, data.toString().length - 5))
         });
-        serveur.stderr.on('data', function(data) {
+        serveur.stderr.on('data', function (data) {
             //console.log(data.toString().substring(0, data.toString().length - 5))
         });
-        serveur.on('exit', function(code) {
+        serveur.on('exit', function (code) {
             console.info("Dependancies sucessfully downloaded");
         });
     });
@@ -178,7 +178,7 @@ exports.new = function(program) {
 //
 //
 //      G E N E R A T E
-exports.generate = function(program) {
+exports.generate = function (program) {
     if (fs.existsSync("./app/") && fs.existsSync("./server.js") && fs.existsSync("./package.json")) {
         if (program.generate === true) {
             console.error("What do you want to generate ?");
@@ -233,7 +233,7 @@ exports.generate = function(program) {
 //
 //
 //      R O U T E
-exports.route = function(program) {
+exports.route = function (program) {
     if (program.route === true) {
         console.error("Argument is missing");
         console.info('Usage : licorne route list');
@@ -417,6 +417,8 @@ function centerString(string, size, left, method) {
             return returned.green;
         } else if (method === "DELETE") {
             return returned.red;
+        } else if (method === "PATCH") {
+            return returned.cyan
         }
     } else {
         let space = "";
@@ -429,6 +431,8 @@ function centerString(string, size, left, method) {
                 return s + string.blue + s + " ";
             } else if (string === "PUT") {
                 return s + string.green + s + " ";
+            } else if (string === "PATCH") {
+                return s + string.cyan + s + " ";
             } else {
                 return s + string + s + " ";
             }
