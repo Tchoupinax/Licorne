@@ -122,7 +122,7 @@ exports.new = function (program) {
     // Dowloading source and rename project directory 
     console.info("Creating a new project");
     const { spawn } = require('child_process');
-    const ls = spawn('git', ['clone', 'git@gitlab.com:dalvik/test-express.git']);
+    const ls = spawn('git', ['clone', 'git@github.com:Tchoupinax/Pony.git']);
     console.info("Downloading source....");
     // When dowloading is finished
     ls.stderr.on('close', (data) => {
@@ -135,10 +135,10 @@ exports.new = function (program) {
                 projectName = readlineSync.question('Project\'s name :');
             }
             // Changing project's name
-            exec("mv ./test-express " + projectName);
+            exec("mv ./Pony " + projectName);
         } else {
             // Changing project's name
-            exec("mv ./test-express " + program.new);
+            exec("mv ./Pony " + program.new);
             projectName = program.new;
         }
         // Asking some information
@@ -157,7 +157,7 @@ exports.new = function (program) {
             jdata.version = version
             jdata.description = description
             jdata.author = author
-            fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata, null, margin));
+            fs.writeFileSync("./" + projectName + "/package.json", JSON.stringify(jdata, null, 4));
         });
         // Downloading Framework dependancies
         var spawn = require('child_process').spawn,
