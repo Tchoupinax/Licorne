@@ -1,6 +1,6 @@
 {
     "name": "licorne",
-    "version": "1.0.15",
+    "version": "1.0.16",
     "description": "Command helpers for managing node js framework called \"Pony\"",
     "main": "app.js",
     "scripts": {

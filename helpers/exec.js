@@ -383,10 +383,10 @@ function rainbowplusplus(char, index) {
 
 function getCompleteTarget() {
     let file = fs.readFileSync('./config/routes.js', 'utf8');
-    let array = file.split("view: ");
+    let array = file.split("function: ");
     let target = [];
     for (let i = 1; i < array.length; i++) {
-        target.push(file.split("view: ")[i].split(" }")[0])
+        target.push(file.split("function: ")[i].split(" }")[0])
     }
     return target;
 }
@@ -414,11 +414,11 @@ function centerString(string, size, left, method) {
         } else if (method === "POST") {
             return returned.yellow;
         } else if (method === "PUT") {
-            return returned.green;
+            return returned.cyan;
         } else if (method === "DELETE") {
             return returned.red;
         } else if (method === "PATCH") {
-            return returned.cyan
+            return returned.green
         }
     } else {
         let space = "";
@@ -430,9 +430,9 @@ function centerString(string, size, left, method) {
             if (string === "GET") {
                 return s + string.blue + s + " ";
             } else if (string === "PUT") {
-                return s + string.green + s + " ";
-            } else if (string === "PATCH") {
                 return s + string.cyan + s + " ";
+            } else if (string === "PATCH") {
+                return s + string.green + s + " ";
             } else {
                 return s + string + s + " ";
             }
