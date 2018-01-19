@@ -121,7 +121,9 @@ exports.new = function (program) {
     let projectName;
     // Dowloading source and rename project directory 
     console.info("Creating a new project");
-    const { spawn } = require('child_process');
+    const {
+        spawn
+    } = require('child_process');
     const ls = spawn('git', ['clone', 'git@github.com:Tchoupinax/Pony.git']);
     console.info("Downloading source....");
     // When dowloading is finished
@@ -147,7 +149,9 @@ exports.new = function (program) {
             console.error("Version must seem like 1.0.0");
             version = readlineSync.question('Version (1.0.0) :');
         }
-        if (version == "") { version = "1.0.0"; }
+        if (version == "") {
+            version = "1.0.0";
+        }
         let description = readlineSync.question('Description (empty) :');
         let author = readlineSync.question('Author(s) (empty) :');
         // Changing composant with project's name
@@ -317,7 +321,7 @@ function displayRouteInArray(routes) {
     //
     // Write headers
     for (let i = 0; i < headers.length; i++) {
-        display += rainbowplusplus("|", i) + centerHeader(headers[i], columnSize[headers[i]] + margin);
+        display += rainbowplusplus("|", i) + centerHeader(headers[i].toUpperCase(), columnSize[headers[i]] + margin);
     }
     display += rainbowplusplus("|", headers.length);
     display += "\n";
@@ -341,6 +345,18 @@ function displayRouteInArray(routes) {
             centerString(targetComplete[i], columnSize[headers[3]] + margin, true, routes[i].method.toUpperCase());
         display += rainbowplusplus("|", i);
         display += "\n";
+        if (routes[i].name.substring(routes[i].name.length - 3, routes[i].name.length) === '&&&') {
+            display += rainbowplusplus("|", i) +
+                centerString('', columnSize[headers[0]] + margin, true, "EMPTY") +
+                rainbowplusplus("|", i) +
+                centerString('', columnSize[headers[1]] + margin, true, "EMPTY") +
+                rainbowplusplus("|", i) +
+                centerString('', columnSize[headers[2]] + margin, false, "EMPTY") +
+                rainbowplusplus("|", i) +
+                centerString('', columnSize[headers[3]] + margin, true, "EMPTY");
+            display += rainbowplusplus("|", i);
+            display += "\n";
+        }
     }
     //
     // Write bottom borderline
@@ -363,7 +379,14 @@ function getNthHyphen(n) {
 function showRoute(parent, path) {
     for (child in parent) {
         if (isNaN(child)) {
-            if (child === "*") { showRoute(parent[child], ""); } else { showRoute(parent[child], path + "/" + child); }
+            if (routes.length > 0 && child !== '*' && child !== 'api') {
+                routes[routes.length - 1].name = routes[routes.length - 1].name + '&&&';
+            }
+            if (child === "*") {
+                showRoute(parent[child], "");
+            } else {
+                showRoute(parent[child], path + "/" + child);
+            }
         } else {
             parent[child].pattern = path + parent[child].pattern
             routes.push(parent[child])
@@ -404,6 +427,16 @@ function centerHeader(string, size) {
 }
 
 function centerString(string, size, left, method) {
+    if (method === "EMPTY") {
+        let returned = "";
+        while (returned.length < size) {
+            returned += "-";
+        }
+        return rainbowplusplus(returned, 0);
+    }
+    if (string.substring(string.length - 3, string.length) === '&&&') {
+        string = string.substring(0, string.length - 3)
+    }
     if (left) {
         let returned = "  " + string;
         while (returned.length < size) {
@@ -418,6 +451,8 @@ function centerString(string, size, left, method) {
         } else if (method === "DELETE") {
             return returned.red;
         } else if (method === "PATCH") {
+            return returned.green
+        } else if (method === "----------------") {
             return returned.green
         }
     } else {
@@ -441,6 +476,8 @@ function centerString(string, size, left, method) {
                 return s + string.yellow + s;
             } else if (string === "DELETE") {
                 return s + string.red + s;
+            } else if (method === "----------------") {
+                return returned.green
             }
         }
     }
